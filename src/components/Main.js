@@ -1,6 +1,6 @@
 import "./Main.css";
 import Form from "./Form";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Main() {
   // Step 1 Getting the Name for Search Query
@@ -12,6 +12,35 @@ export default function Main() {
     setName(nameFromInput);
     event.target.reset();
   }
+
+  //GENDER API CALL
+  useEffect(() => {
+    if (name) {
+      const url = `https://api.genderize.io?name=${name}`;
+      fetch(url)
+        .then((response) => response.json())
+        .then((data) => console.log(data));
+    }
+  }, [name]);
+  // AGE
+  useEffect(() => {
+    if (name) {
+      const url = `https://api.agify.io?name=${name}`;
+      fetch(url)
+        .then((response) => response.json())
+        .then((data) => console.log(data));
+    }
+  }, [name]);
+
+  // Nationality
+  useEffect(() => {
+    if (name) {
+      const url = `https://api.nationalize.io?name=${name}`;
+      fetch(url)
+        .then((response) => response.json())
+        .then((data) => console.log(data));
+    }
+  }, [name]);
 
   return (
     <main>
