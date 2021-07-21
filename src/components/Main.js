@@ -1,12 +1,11 @@
 import "./Main.css";
+import Form from "./Form";
+import { useState } from "react";
 
 export default function Main() {
   return (
     <main>
-      <fom onSubmit={"submit"} className="queryForm">
-        <input type="text" />
-        <button type="submit">Search</button>
-      </fom>
+      <Form onSubmit={() => console.log("submit")} />
 
       <section className="result">
         <h2>Result</h2>
