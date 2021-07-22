@@ -1,54 +1,60 @@
 import "./Main.css";
 import Form from "./Form";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 export default function Main() {
-  // Step 1 Getting the Name for Search Query
-  const [name, setName] = useState("");
-
+  const [personData, setPersonData] = useState();
   function getName(event) {
+    // 1. Get Name
     event.preventDefault();
-    const nameFromInput = event.target.name.value;
-    setName(nameFromInput);
-    event.target.reset();
+    const form = event.target;
+    let inputName = form.name.value;
+
+    const person = {};
+    person.name = inputName;
+
+    // 2. Get Age
+    const ageUrl = inputName ? `https://api.agify.io?name=${inputName}` : "";
+    fetch(ageUrl)
+      .then((response) => response.json())
+      .then((data) => {
+        person.age = data.age;
+      });
+
+    // 3. Get Nation
+    const nationUrl = inputName
+      ? `https://api.nationalize.io?name=${inputName}`
+      : "";
+    fetch(nationUrl)
+      .then((response) => response.json())
+      .then((data) => {
+        person.nation = data.country;
+      });
+
+    // 4. Get Gender
+    const genderUrl = inputName
+      ? `https://api.genderize.io?name=${inputName}`
+      : "";
+    fetch(genderUrl)
+      .then((response) => response.json())
+      .then((data) => {
+        person.gender = data.gender;
+        person.probability = data.probability;
+      });
+
+    //5. Reset Form
+    form.reset();
+    // 6. Write into global Object
+    setPersonData(person);
   }
-
-  //GENDER API CALL
-  useEffect(() => {
-    if (name) {
-      const url = `https://api.genderize.io?name=${name}`;
-      fetch(url)
-        .then((response) => response.json())
-        .then((data) => console.log(data));
-    }
-  }, [name]);
-  // AGE
-  useEffect(() => {
-    if (name) {
-      const url = `https://api.agify.io?name=${name}`;
-      fetch(url)
-        .then((response) => response.json())
-        .then((data) => console.log(data));
-    }
-  }, [name]);
-
-  // Nationality
-  useEffect(() => {
-    if (name) {
-      const url = `https://api.nationalize.io?name=${name}`;
-      fetch(url)
-        .then((response) => response.json())
-        .then((data) => console.log(data));
-    }
-  }, [name]);
-
+  console.log(personData);
   return (
     <main>
       <Form onSubmit={getName} />
 
       <section className="result">
         <h2>Result</h2>
-        <p className="text">Hello</p>
+        <p className="text">{personData ? personData.name : "Hello"}</p>
       </section>
     </main>
   );
